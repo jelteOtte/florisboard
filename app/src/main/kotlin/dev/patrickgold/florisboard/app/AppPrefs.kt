@@ -563,7 +563,7 @@ class AppPrefs : PreferenceModel("florisboard-app-prefs") {
         )
         val ignoreNavigationBarPadding = boolean(
             key = "keyboard__ignore_navigation_bar_padding",
-            default = true,
+            default = false,
         )
 
         fun keyHintConfiguration(): KeyHintConfiguration {

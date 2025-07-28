@@ -159,6 +159,11 @@ fun KeyboardScreen() = FlorisScreen {
                 max = 60,
                 stepIncrement = 1,
             )
+            SwitchPreference(
+                prefs.keyboard.ignoreNavigationBarPadding,
+                title = stringRes(R.string.pref__keyboard__ignore_navigation_bar_padding__label),
+                summary = stringRes(R.string.pref__keyboard__ignore_navigation_bar_padding__summary),
+            )
         }
 
         PreferenceGroup(title = stringRes(R.string.pref__keyboard__group_keypress__label)) {
