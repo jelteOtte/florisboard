@@ -1125,4 +1125,15 @@
         <item quantity="other">{v} candidates</item>
     </plurals>
 
+    <!-- Settings Export/Import -->
+    <string name="settings__export_import__title">Settings Export &amp; Import</string>
+    <string name="settings__export__title">Export Settings</string>
+    <string name="settings__export__summary">Export current settings to a JSON file</string>
+    <string name="settings__import__title">Import Settings</string>
+    <string name="settings__import__summary">Import settings from a JSON file</string>
+    <string name="settings__export__success">Settings exported successfully!</string>
+    <string name="settings__export__failure">Failed to export settings: {error_message}</string>
+    <string name="settings__import__success">Settings imported successfully! {count} preferences restored.</string>
+    <string name="settings__import__failure">Failed to import settings: {error_message}</string>
+
 </resources>

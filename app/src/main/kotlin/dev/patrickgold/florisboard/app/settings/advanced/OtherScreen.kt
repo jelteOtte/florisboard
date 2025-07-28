@@ -24,10 +24,18 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Preview
 import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import dev.patrickgold.florisboard.lib.util.SettingsBackupUtils
+import kotlinx.coroutines.launch
+import org.florisboard.lib.android.showLongToast
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.app.AppTheme
 import dev.patrickgold.florisboard.app.LocalNavController
@@ -57,6 +65,41 @@ fun OtherScreen() = FlorisScreen {
 
     val navController = LocalNavController.current
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val exportSettingsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json"),
+        onResult = { uri ->
+            if (uri != null) {
+                coroutineScope.launch {
+                    SettingsBackupUtils.exportSettingsToUri(context, uri)
+                        .onSuccess {
+                            context.showLongToast(R.string.settings__export__success)
+                        }
+                        .onFailure { error ->
+                            context.showLongToast(R.string.settings__export__failure, "error_message" to error.message)
+                        }
+                }
+            }
+        }
+    )
+
+    val importSettingsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            if (uri != null) {
+                coroutineScope.launch {
+                    SettingsBackupUtils.importSettingsFromUri(context, uri)
+                        .onSuccess { count ->
+                            context.showLongToast(R.string.settings__import__success, "count" to count)
+                        }
+                        .onFailure { error ->
+                            context.showLongToast(R.string.settings__import__failure, "error_message" to error.message)
+                        }
+                }
+            }
+        }
+    )
 
     content {
         ListPreference(
@@ -178,6 +221,25 @@ fun OtherScreen() = FlorisScreen {
                 icon = Icons.Default.SettingsBackupRestore,
                 title = stringRes(R.string.backup_and_restore__restore__title),
                 summary = stringRes(R.string.backup_and_restore__restore__summary),
+            )
+        }
+
+        PreferenceGroup(title = stringRes(R.string.settings__export_import__title)) {
+            Preference(
+                onClick = { 
+                    exportSettingsLauncher.launch(SettingsBackupUtils.generateBackupFileName()) 
+                },
+                icon = Icons.Default.Upload,
+                title = stringRes(R.string.settings__export__title),
+                summary = stringRes(R.string.settings__export__summary),
+            )
+            Preference(
+                onClick = { 
+                    importSettingsLauncher.launch("application/json") 
+                },
+                icon = Icons.Default.Download,
+                title = stringRes(R.string.settings__import__title),
+                summary = stringRes(R.string.settings__import__summary),
             )
         }
     }
