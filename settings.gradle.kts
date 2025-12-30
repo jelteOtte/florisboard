@@ -40,11 +40,13 @@ dependencyResolutionManagement {
         }
     }
 }
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":app")
 //include(":benchmark")
 include(":lib:android")
 include(":lib:color")
+include(":lib:compose")
 include(":lib:kotlin")
 include(":lib:native")
 include(":lib:snygg")
